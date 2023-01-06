@@ -59,5 +59,6 @@ class EditCredentialsSerializer(ModelSerializer):
             instance.mobile = validated_data.get('mobile')
             instance.is_mobile_verified = False
         instance.save()
+        return instance
 
 

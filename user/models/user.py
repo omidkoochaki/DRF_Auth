@@ -84,6 +84,14 @@ class User(AbstractBaseUser, BaseModel):
 
     objects = UserManager()
 
+    def get_username(self):
+        if self.email:
+            return self.email
+        elif self.mobile:
+            return self.mobile
+        else:
+            return getattr(self, self.USERNAME_FIELD)
+
     def is_staff(self):
         return self.staff
 
