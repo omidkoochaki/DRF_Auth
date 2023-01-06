@@ -10,7 +10,8 @@ class Profile(BaseModel):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='profile'
+        related_name='profile',
+        unique=True,
     )
     bio = models.CharField(
         max_length=128,
@@ -28,4 +29,4 @@ class Profile(BaseModel):
     )
 
     def __str__(self):
-        return self.user
+        return self.user.__str__()

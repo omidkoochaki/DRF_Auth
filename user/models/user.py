@@ -97,7 +97,6 @@ class User(AbstractBaseUser, BaseModel):
         if self.email:
             return self.email
         elif self.mobile:
-            return self.mobile
-        else:
-            return str(self.id)
+            return str(self.mobile)
+        return super().__str__()
 

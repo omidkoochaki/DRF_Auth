@@ -28,5 +28,8 @@ class ActivationCode(BaseModel):
         default='REGISTER'
     )
 
+    class Meta:
+        unique_together = ('user', 'code', 'created_at')
+
     def __str__(self):
         return self.code
