@@ -1,1 +1,4 @@
 from .make_new_profile import make_new_profile
+from .make_activation_code import make_activation_code
+from .send_verification_sms import ask_celery_send_otp
+from .send_verification_email import ask_celery_send_email
