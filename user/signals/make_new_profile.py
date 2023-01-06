@@ -11,7 +11,7 @@ def make_new_profile(sender, instance, created, **kwargs):
         Profile.objects.create(
             user=instance
         )
-        if instance.mobile:
+        if instance.mobile and not instance.is_mobile_verified:
             activation_code = ActivationCode(
                 user=instance,
                 code=generate_random_code(1000, 9999),

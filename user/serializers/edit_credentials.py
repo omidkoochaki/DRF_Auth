@@ -9,7 +9,7 @@ from utils.errors import Errors
 User = get_user_model()
 
 
-class SignUpSerializer(ModelSerializer):
+class EditCredentialsSerializer(ModelSerializer):
     email = serializers.EmailField(
         required=False,
         validators=[UniqueValidator(queryset=User.objects.all())]
@@ -23,12 +23,12 @@ class SignUpSerializer(ModelSerializer):
 
     password = serializers.CharField(
         write_only=True,
-        required=True,
+        required=False,
         validators=[validate_password]
     )
     password2 = serializers.CharField(
         write_only=True,
-        required=True
+        required=False
     )
 
     class Meta:
@@ -36,27 +36,28 @@ class SignUpSerializer(ModelSerializer):
         fields = ('email', 'mobile', 'password', 'password2',)
         extra_kwargs = {
             'email': {'required': False},
-            'password': {'required': True},
-            'password2': {'required': True},
+            'password': {'required': False},
+            'password2': {'required': False},
             'mobile': {'required': False},
         }
 
     def validate(self, attrs):
-        if attrs['password'] != attrs['password2']:
+        if attrs.get('password') != attrs.get('password2'):
             raise serializers.ValidationError(Errors.PASSWORD_NOT_MATCH)
-        if not attrs.get('mobile') and not attrs.get('email'):
-            raise serializers.ValidationError(Errors.NEED_MOBILE_OR_PASSWORD_TO_REGISTER)
+        if not attrs.get('mobile') and not attrs.get('email') and not attrs.get('password'):
+            raise serializers.ValidationError(Errors.NOTHING_FOR_UPDATE)
 
         return attrs
 
-    def create(self, validated_data):
-        user = User.objects.create(
-            email=validated_data.get('email'),
-            mobile=validated_data.get('mobile'),
-        )
+    def update(self, instance, validated_data):
+        if validated_data.get('password'):
+            instance.set_password(validated_data.get('password'))
+        if validated_data.get('email'):
+            instance.email = validated_data.get('email')
+            instance.is_email_verified = False
+        if validated_data.get('mobile'):
+            instance.mobile = validated_data.get('mobile')
+            instance.is_mobile_verified = False
+        instance.save()
 
-        user.set_password(validated_data['password'])
-        user.save()
-
-        return user
 

@@ -7,11 +7,10 @@ User = get_user_model()
 
 
 class Profile(BaseModel):
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
         related_name='profile',
-        unique=True,
     )
     bio = models.CharField(
         max_length=128,
