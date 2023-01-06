@@ -30,6 +30,14 @@ ALLOWED_HOSTS = []
 # Custom User Model
 AUTH_USER_MODEL = 'user.User'
 
+# Celery Broker - Redis
+CELERY_BROKER_URL = "redis://redis:6379"
+CELERY_RESULT_BACKEND = "redis://redis:6379"
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_TIMEZONE = "Asia/New_York"
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,6 +49,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
+    'celery',
     'user.apps.UserConfig'
 ]
 

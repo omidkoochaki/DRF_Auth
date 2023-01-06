@@ -3,6 +3,8 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueValidator
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from utils.errors import Errors
 
@@ -58,6 +60,16 @@ class EditCredentialsSerializer(ModelSerializer):
         if validated_data.get('mobile'):
             instance.mobile = validated_data.get('mobile')
             instance.is_mobile_verified = False
+        # try:
+        #     tokens = OutstandingToken.objects.filter(user=instance)
+        #     print(tokens, '- # '*50)
+        #     for token in tokens:
+        #         OutstandingToken.delete(token)
+        #         token = RefreshToken(token.token)
+        #         token.blacklist()
+        # except:
+        #     token = RefreshToken(self.context['request'].data.get('refresh_token'))
+        #     token.blacklist()
         instance.save()
         return instance
 

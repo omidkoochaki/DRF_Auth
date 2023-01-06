@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+  web:
+    container_name: ${APP_NAME}_WEB
+    env_file: .env
+    build:
+      context: .
+      dockerfile: docker_files/Dockerfile
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000
+      "
+    volumes:
+      - .:/code
+    ports:
+      - 8000:${EXPOSE_PORT}
+    
+    networks:
+      - ic-network
+  redis:
+      image: redis:alpine
+      ports:
+        - 6379:${REDIS_PORT}
+      networks:
+        - ic-network
+  celery:
+    env_file: .env
+    restart: always
+    build:
+      context: .
+      dockerfile: "docker_files/Dockerfile"
+    command: celery -A core worker -l info
+    volumes:
+      - .:/code
+    depends_on:
+      - redis
+      - web
+    networks:
+      - ic-network
+
+networks:
+   ic-network:
