@@ -17,7 +17,6 @@ class SignUpView(ModelViewSet):
 
 class EditCredentialsView(ModelViewSet):
     permission_classes = [IsAuthenticated]
-
     def get_queryset(self):
         return User.objects.filter(id=self.request.user.id)
     serializer_class = EditCredentialsSerializer

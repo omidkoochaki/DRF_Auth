@@ -11,13 +11,20 @@ def make_new_profile(sender, instance, created, **kwargs):
         Profile.objects.create(
             user=instance
         )
-        if instance.mobile and not instance.is_mobile_verified:
-            activation_code = ActivationCode(
-                user=instance,
-                code=generate_random_code(1000, 9999),
-                type='REGISTER'
-            )
-            activation_code.save()
-            # TODO: Call Celery Task
-        # TODO: if instance.email
+
+
+@receiver(signal=post_save, sender=User)
+def make_activation_code(sender, instance, created, **kwargs):
+    if instance.mobile and \
+            not instance.is_mobile_verified and \
+            instance.password:
+
+        activation_code = ActivationCode(
+            user=instance,
+            code=generate_random_code(1000, 9999),
+            type='REGISTER'
+        )
+        activation_code.save()
+        # TODO: Call Celery Task
+    # TODO: if instance.email
 
