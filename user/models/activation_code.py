@@ -27,3 +27,6 @@ class ActivationCode(BaseModel):
         verbose_name='Type',
         default='REGISTER'
     )
+
+    def __str__(self):
+        return self.code

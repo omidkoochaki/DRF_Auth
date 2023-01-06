@@ -92,3 +92,12 @@ class User(AbstractBaseUser, BaseModel):
 
     def has_module_perms(self, app_label):
         return self.is_superuser
+
+    def __str__(self):
+        if self.email:
+            return self.email
+        elif self.mobile:
+            return self.mobile
+        else:
+            return str(self.id)
+
