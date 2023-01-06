@@ -29,14 +29,14 @@ class UserManager(BaseUserManager):
     def create_staffuser(self, email=None, mobile=None, password=None):
         user = self.check_inputs(email=email, mobile=mobile)
         user.set_password(password)
-        user.staff = True
+        user.is_staff = True
         user.save(using=self._db)
         return user
 
     def create_superuser(self, email=None, mobile=None, password=None):
         user = self.check_inputs(email=email, mobile=mobile)
         user.set_password(password)
-        user.staff = True
+        user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
         return user
@@ -64,6 +64,14 @@ class User(AbstractBaseUser, BaseModel):
         default=False,
         verbose_name='Mobile Verified',
     )
+    staff = models.BooleanField(
+        verbose_name='Staff',
+        default=False
+    )
+    is_superuser = models.BooleanField(
+        verbose_name='Admin',
+        default=False
+    )
 
     # def get_username_field(self):
     #     if self.email:
@@ -75,3 +83,12 @@ class User(AbstractBaseUser, BaseModel):
     USERNAME_FIELD = 'email'
 
     objects = UserManager()
+
+    def is_staff(self):
+        return self.staff
+
+    def has_perm(self, obj=None):
+        return self.is_superuser
+
+    def has_module_perms(self, app_label):
+        return self.is_superuser
