@@ -54,6 +54,7 @@ class User(AbstractBaseUser, BaseModel):
         verbose_name='Email Verified',
     )
     mobile = models.CharField(
+        max_length=11,
         unique=True,
         verbose_name='Mobile',
         blank=True,
@@ -64,12 +65,13 @@ class User(AbstractBaseUser, BaseModel):
         verbose_name='Mobile Verified',
     )
 
-    def get_username_field(self):
-        if self.email:
-            return 'email'
-        elif self.mobile:
-            return 'mobile'
+    # def get_username_field(self):
+    #     if self.email:
+    #         self.USERNAME_FIELD = 'email'
+    #     elif self.mobile:
+    #         self.USERNAME_FIELD = 'mobile'
+    #     return self.USERNAME_FIELD
 
-    USERNAME_FIELD = get_username_field()
+    USERNAME_FIELD = 'email'
 
     objects = UserManager()
